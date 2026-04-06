@@ -7,10 +7,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=receitas.db"));
 
-// Add services to the container.
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+//ajuda a criar o banco no ambiente hospedado quando a aplicação subir
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -33,4 +40,5 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 
-app.Run();
+//app.Run();
+app.Run("http://0.0.0.0:" + Environment.GetEnvironmentVariable("PORT"));
