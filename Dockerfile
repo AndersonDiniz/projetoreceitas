@@ -2,6 +2,8 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0-preview AS build
 WORKDIR /src
 
 COPY . .
+WORKDIR /src/ReceitasApp
+
 RUN dotnet restore
 RUN dotnet publish -c Release -o /app/publish
 
