@@ -1,0 +1,89 @@
+@model ReceitasApp.ViewModels.ReceitaFiltroViewModel
+
+@{
+    ViewData["Title"] = "Consultar Receitas";
+}
+
+<h1>Consultar Receitas</h1>
+
+<form method="get" asp-action="Consulta" class="row g-3 mb-4" id="formFiltro">
+    <div class="col-md-3">
+        <label asp-for="Nome" class="form-label"></label>
+        <input asp-for="Nome" class="form-control filtro-auto" />
+    </div>
+
+    <div class="col-md-2">
+        <label asp-for="TempoPreparacao" class="form-label"></label>
+        <input asp-for="TempoPreparacao" class="form-control filtro-auto" />
+    </div>
+
+    <div class="col-md-2">
+        <label asp-for="NumeroPessoas" class="form-label"></label>
+        <input asp-for="NumeroPessoas" class="form-control filtro-auto" />
+    </div>
+
+    <div class="col-md-2">
+        <label asp-for="Dificuldade" class="form-label"></label>
+        <select asp-for="Dificuldade" asp-items="Model.Dificuldades" class="form-select filtro-auto">
+            <option value="">Todas</option>
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <label asp-for="Categoria" class="form-label"></label>
+        <select asp-for="Categoria" asp-items="Model.Categorias" class="form-select filtro-auto">
+            <option value="">Todas</option>
+        </select>
+    </div>
+
+   
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Tempo de Preparação</th>
+            <th>Número de Pessoas</th>
+            <th>Dificuldade</th>
+            <th>Categoria</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Receitas)
+{
+        <tr>
+            <td>@item.Nome</td>
+            <td>@item.TempoPreparacao</td>
+            <td>@item.NumeroPessoas</td>
+            <td>@item.Dificuldade</td>
+            <td>@item.Categoria</td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        const formFiltro = document.getElementById('formFiltro');
+        const camposFiltro = document.querySelectorAll('.filtro-auto');
+
+        let timeout = null;
+
+        camposFiltro.forEach(campo => {
+            campo.addEventListener('input', dispararFiltro);
+            campo.addEventListener('change', dispararFiltro);
+        });
+
+        function dispararFiltro() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                formFiltro.submit();
+            }, 500); //debounce de 500ms, evitra comportamento instavel e multiplas requisições por tecla digitada
+        }
+    </script>
+}

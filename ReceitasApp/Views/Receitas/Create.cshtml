@@ -1,0 +1,169 @@
+@model ReceitasApp.ViewModels.ReceitaCreateViewModel
+
+@{
+    ViewData["Title"] = "Criar Receita";
+}
+
+<h1>Criar Receita</h1>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-10">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Nome" class="form-label"></label>
+                <input asp-for="Nome" class="form-control" />
+                <span asp-validation-for="Nome" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="TempoPreparacao" class="form-label"></label>
+                <input asp-for="TempoPreparacao" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="NumeroPessoas" class="form-label"></label>
+                <input asp-for="NumeroPessoas" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Dificuldade" class="form-label"></label>
+                <select asp-for="Dificuldade" asp-items="Model.Dificuldades" class="form-select">
+                    <option value="">Selecione</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Categoria" class="form-label"></label>
+                <select asp-for="Categoria" asp-items="Model.Categorias" class="form-select">
+                    <option value="">Selecione</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Preparacao" class="form-label"></label>
+                <textarea asp-for="Preparacao" class="form-control"></textarea>
+            </div>
+
+            <hr />
+            <h4>Ingredientes</h4>
+
+            <div class="row g-2 align-items-end">
+                <div class="col-md-5">
+                    <label class="form-label">Ingrediente</label>
+                    <input type="text" id="ingredienteNome" class="form-control" />
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Quantidade</label>
+                    <input type="number" step="0.01" id="ingredienteQuantidade" class="form-control" />
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">Medida</label>
+                    <select id="ingredienteMedida" class="form-select">
+                        <option value="">Selecione</option>
+                        @foreach (var medida in Model.Medidas)
+                        {
+                            <option value="@medida.Value">@medida.Text</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <button type="button" id="btnAdicionarIngrediente" class="btn btn-success w-100">Adicionar</button>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <table class="table table-bordered" id="tabelaIngredientes">
+                    <thead>
+                        <tr>
+                            <th>Ingrediente</th>
+                            <th>Quantidade</th>
+                            <th>Medida</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="ingredientesHiddenContainer"></div>
+
+            <div class="mt-3">
+                <input type="submit" value="Salvar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        let ingredientes = [];
+
+        function renderIngredientes() {
+            const tbody = document.querySelector("#tabelaIngredientes tbody");
+            const hiddenContainer = document.getElementById("ingredientesHiddenContainer");
+
+            tbody.innerHTML = "";
+            hiddenContainer.innerHTML = "";
+
+            ingredientes.forEach((item, index) => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${item.nome}</td>
+                    <td>${item.quantidade}</td>
+                    <td>${item.medida}</td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removerIngrediente(${index})">Remover</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+
+                hiddenContainer.innerHTML += `
+                    <input type="hidden" name="Ingredientes[${index}].Nome" value="${item.nome}" />
+                    <input type="hidden" name="Ingredientes[${index}].Quantidade" value="${item.quantidade}" />
+                    <input type="hidden" name="Ingredientes[${index}].Medida" value="${item.medida}" />
+                `;
+            });
+        }
+
+        function removerIngrediente(index) {
+            ingredientes.splice(index, 1);
+            renderIngredientes();
+        }
+
+        document.getElementById("btnAdicionarIngrediente").addEventListener("click", function () {
+            const nome = document.getElementById("ingredienteNome").value.trim();
+            const quantidade = document.getElementById("ingredienteQuantidade").value.trim();
+            const medida = document.getElementById("ingredienteMedida").value.trim();
+
+            if (!nome) {
+                alert("Informe o nome do ingrediente.");
+                return;
+            }
+
+            ingredientes.push({
+                nome: nome,
+                quantidade: quantidade || "0",
+                medida: medida
+            });
+
+            renderIngredientes();
+
+            document.getElementById("ingredienteNome").value = "";
+            document.getElementById("ingredienteQuantidade").value = "";
+            document.getElementById("ingredienteMedida").value = "";
+        });
+    </script>
+}

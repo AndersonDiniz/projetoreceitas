@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Início";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Sistema de Receitas</h1>
+    <p>Escolha uma das opções abaixo:</p>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Novas Receitas</h5>
+                <p class="card-text">Cadastrar uma nova receita.</p>
+                <a asp-controller="Receitas" asp-action="Create" class="btn btn-primary">Acessar</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Consultar Receitas</h5>
+                <p class="card-text">Pesquisar receitas com filtros.</p>
+                <a asp-controller="Receitas" asp-action="Consulta" class="btn btn-success">Acessar</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Gerir Receitas</h5>
+                <p class="card-text">Editar e excluir receitas cadastradas.</p>
+                <a asp-controller="Receitas" asp-action="Gerir" class="btn btn-warning">Acessar</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+@model IEnumerable<ReceitasApp.Models.Receita>
+
+@{
+    ViewData["Title"] = "Gerir Receitas";
+}
+
+<h1>Gerir Receitas</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Nova Receita</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Tempo de Preparação</th>
+            <th>Número de Pessoas</th>
+            <th>Dificuldade</th>
+            <th>Categoria</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model)
+{
+        <tr>
+            <td>@item.Nome</td>
+            <td>@item.TempoPreparacao</td>
+            <td>@item.NumeroPessoas</td>
+            <td>@item.Dificuldade</td>
+            <td>@item.Categoria</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Excluir</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
